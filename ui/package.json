@@ -1,0 +1,63 @@
+{
+  "name": "kgllm-ui",
+  "version": "1.0.0",
+  "description": "UI template for the KGLLM project",
+  "scripts": {
+    "dev": "vite",
+    "start": "serve dist",
+    "build": "tsc && vite build",
+    "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ryang420/Freyr-KG-LLM.git"
+  },
+  "keywords": [
+    "Neo4j",
+    "LLM",
+    "KGLLM"
+  ],
+  "author": "Neo4j",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ryang420/Freyr-KG-LLM/issues"
+  },
+  "homepage": "https://github.com/ryang420/Freyr-KG-LLM#readme",
+  "dependencies": {
+    "@neo4j-ndl/base": "1.4.0",
+    "@neo4j/graph-schema-utils": "^1.0.0-next.9",
+    "@types/react-modal": "^3.16.0",
+    "file-saver": "^2.0.5",
+    "jszip": "^3.10.1",
+    "nanoid": "^4.0.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-minimal-pie-chart": "^8.4.0",
+    "react-modal": "^3.16.1",
+    "react-use-websocket": "^4.3.1",
+    "serve": "^14.2.0",
+    "typescript": "^5.0.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.9",
+    "@types/file-saver": "^2.0.5",
+    "@types/react": "^18.2.7",
+    "@types/react-dom": "^18.2.4",
+    "@types/sockjs-client": "^1.5.1",
+    "@vitejs/plugin-react": "^4.0.0",
+    "autoprefixer": "^10.4.14",
+    "daisyui": "^3.1.7",
+    "eslint": "^8.41.0",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.1",
+    "postcss": "^8.4.23",
+    "tailwindcss": "^3.3.2",
+    "vite": "^4.3.8"
+  },
+  "engines": {
+    "node": "^18.0.0"
+  }
+}

@@ -46,3 +46,4 @@ MANIFEST
 
 # IDE - VSCode
 .idea/
+.venv/

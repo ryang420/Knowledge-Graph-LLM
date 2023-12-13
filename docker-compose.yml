@@ -1,0 +1,22 @@
+version: "3.7"
+services:
+  backend:
+    build:
+      context: ./api
+    hostname: api
+    restart: always
+    container_name: api
+    ports:
+      - 7860:7860
+    env_file:
+      - .env
+    volumes:
+      - ./api:/api
+  frontend:
+    build:
+      context: ./ui
+    hostname: ui
+    restart: always
+    container_name: ui
+    ports:
+      - 4173:4173
