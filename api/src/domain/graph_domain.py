@@ -28,9 +28,9 @@ class Relationship(BaseRelationship):
 class KnowledgeGraph(BaseModel):
     """Generate a knowledge graph with entities and relationships."""
     nodes: List[Node] = Field(
-        ..., description="List of nodes in the knowledge graph")
+        [], description="List of nodes in the knowledge graph")
     rels: List[Relationship] = Field(
-        ..., description="List of relationships in the knowledge graph"
+        [], description="List of relationships in the knowledge graph"
     )
 
 

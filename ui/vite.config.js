@@ -15,7 +15,6 @@ export default defineConfig({
         app: resolve(__dirname, 'index.html'),
         appKgChat: resolve(__dirname, 'use-cases/chat-with-kg/index.html'),
         appImport: resolve(__dirname, 'use-cases/unstructured-import/index.html'),
-        appReport: resolve(__dirname, 'use-cases/report-generation/index.html'),
       },
     },
   },

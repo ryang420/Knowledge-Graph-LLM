@@ -1,10 +1,8 @@
 import os
 from typing import Optional
-
-from langchain.chat_models import ChatOpenAI
 from langchain.graphs.graph_document import GraphDocument
 from langchain.text_splitter import TokenTextSplitter
-
+from langchain.chat_models import ChatOpenAI
 from components.company_report import CompanyReport
 
 from components.data_disambiguation import DataDisambiguation
