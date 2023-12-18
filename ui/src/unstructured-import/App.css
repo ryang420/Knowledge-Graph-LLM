@@ -1,0 +1,30 @@
+.grey-background {
+    background-color: grey;
+    margin-top: 1vw;
+    border-radius: 3px;
+}
+
+.save-modal-content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  max-width: 500px; /* Set your desired max-width */
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+  z-index: 1000;
+}
+
+.close-button {
+  position: absolute; /* Position the button relative to the modal */
+  top: 10px; /* Position from the top */
+  right: 10px; /* Position from the right */
+  background: transparent; /* No background */
+  border: none; /* No border */
+  font-size: 1.5em; /* Make the "X" bigger */
+  cursor: pointer; /* Change cursor to pointer on hover */
+}

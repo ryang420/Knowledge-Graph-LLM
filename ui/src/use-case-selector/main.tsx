@@ -10,11 +10,13 @@ const root = createRoot(container!);
 root.render(
   <React.StrictMode>
     <div className="flex flex-col min-h-screen gap-4 max-w-[1000px] w-[80%] mx-auto mt-4 ">
-      <h1 className="text-4xl font-bold text-center">NaLLM Demo</h1>
+      <h1 className="text-4xl font-bold text-center">Freyr Knowledge Graph + LLM Demo</h1>
+      <h3>Demo cases:</h3>
       <p>
-        Welcome to the NaLLM project demo, In this project we have explored two
-        use cases. A Natural Language Interface to a Knowledge Graph and
-        Creating a Knowledge Graph from Unstructured Data.
+        1. A Natural Language Interface to communicate with a Knowledge Graph.
+      </p>
+      <p>
+        2. Construct a Knowledge Graph from Unstructured Data.
       </p>
       <p>Use the options below to explore the use cases.</p>
       <div className="flex flex-col w-full gap-4 px-10">

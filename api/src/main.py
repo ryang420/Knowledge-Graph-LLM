@@ -1,5 +1,10 @@
 import os
 from typing import Optional
+
+from langchain.chat_models import ChatOpenAI
+from langchain.graphs.graph_document import GraphDocument
+from langchain.text_splitter import TokenTextSplitter
+
 from components.company_report import CompanyReport
 
 from components.data_disambiguation import DataDisambiguation
@@ -19,7 +24,14 @@ from fastapi.responses import JSONResponse
 from fewshot_examples import get_fewshot_examples
 from llm.openai import OpenAIChat
 from pydantic import BaseModel
+from components.graph_extraction import extract_graph
+from langchain.schema import Document
 
+# load environment variables from .env
+from dotenv import load_dotenv
+
+# .env is in the root directory
+load_dotenv(dotenv_path="../../.env")
 
 class Payload(BaseModel):
     question: str
@@ -40,17 +52,23 @@ class questionProposalPayload(BaseModel):
 # Maximum number of records used in the context
 HARD_LIMIT_CONTEXT_RECORDS = 10
 
-neo4j_connection = Neo4jDatabase(
-    host=os.environ.get("NEO4J_URL", "neo4j+s://demo.neo4jlabs.com"),
-    user=os.environ.get("NEO4J_USER", "companies"),
-    password=os.environ.get("NEO4J_PASS", "companies"),
-    database=os.environ.get("NEO4J_DATABASE", "companies"),
-)
+HOST = os.getenv("NEO4J_URL")
+USER = os.getenv("NEO4J_USER")
+PASSWORD = os.getenv("NEO4J_PASS")
+DATABASE = os.getenv("NEO4J_DATABASE")
 
+neo4j_connection = Neo4jDatabase(
+    host=HOST,
+    user=USER,
+    password=PASSWORD,
+    database=DATABASE,
+)
+from langchain.graphs import Neo4jGraph
+
+graph = Neo4jGraph(url=HOST, username=USER, password=PASSWORD, database=DATABASE)
 
 # Initialize LLM modules
 openai_api_key = os.environ.get("OPENAI_API_KEY", None)
-
 
 # Define FastAPI endpoint
 app = FastAPI()
@@ -190,6 +208,48 @@ async def websocket_endpoint(websocket: WebSocket):
         print("disconnected")
 
 
+@app.post("/save_graph")
+async def save_graph(graph_doc: GraphDocument):
+    graph.add_graph_documents([graph_doc])
+    return JSONResponse(content={"output": "ok"})
+
+
+@app.post("/text2graph")
+async def text_to_graph(payload: ImportPayload):
+    """
+    Takes an input and return a graph
+    """
+    if not openai_api_key and not payload.api_key:
+        raise HTTPException(
+            status_code=422,
+            detail="Please set OPENAI_API_KEY environment variable or send it as api_key in the request body",
+        )
+    api_key = openai_api_key if openai_api_key else payload.api_key
+
+    try:
+        llm = ChatOpenAI(openai_api_key=api_key, model="gpt-3.5-turbo-16k", temperature=0)
+
+        data = payload.input
+        # transform data to a document object
+        document = Document(page_content=data)
+
+        # Define chunking strategy
+        text_splitter = TokenTextSplitter(chunk_size=2048, chunk_overlap=24)
+
+        # split the document by text_splitter
+        documents = text_splitter.split_documents([document])
+
+        for d in documents:
+            graph_data = extract_graph(llm, d)
+            print(graph_data)
+
+        return {"data": graph_data}
+
+    except Exception as e:
+        print(e)
+        return f"Error: {e}"
+
+
 @app.post("/data2cypher")
 async def root(payload: ImportPayload):
     """
@@ -279,5 +339,6 @@ async def readiness_check():
 
 if __name__ == "__main__":
     import uvicorn
+    from pathlib import Path
 
-    uvicorn.run(app, port=int(os.environ.get("PORT", 7860)), host="0.0.0.0")
+    uvicorn.run(f"{Path(__file__).stem}:app", port=int(os.environ.get("PORT", 7860)), host="0.0.0.0", reload=True)

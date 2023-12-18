@@ -91,7 +91,7 @@ export const saveImportResultAsNeo4jImport = (importResult: ImportResult) => {
   const relationshipTypes: model.RelationshipType[] = [];
   relationships.map(
     (relationship, index) =>
-      new model.RelationshipType(`n${index}`, relationship)
+      new model.RelationshipType(`n${index}`, relationship),
   ),
     labels.forEach((label, index) => {
       const nodeLabel = new model.NodeLabel(`n${index}`, label);
@@ -175,10 +175,10 @@ export const saveImportResultAsNeo4jImport = (importResult: ImportResult) => {
 
   relationships.forEach((relationship, index) => {
     const relationships = importResult.relationships.filter(
-      (item) => item.type === relationship
+      (item) => item.type === relationship,
     );
     relationshipTypes.push(
-      new model.RelationshipType(`r${relationship}`, relationship)
+      new model.RelationshipType(`r${relationship}`, relationship),
     );
 
     const startLabel =
@@ -238,7 +238,7 @@ export const saveImportResultAsNeo4jImport = (importResult: ImportResult) => {
 
     modelFile.dataModel.fileModel.fileSchemas[
       `relationships-${relationship}.csv`
-    ] = {
+      ] = {
       expanded: true,
       fields: fields,
     };
@@ -290,7 +290,7 @@ export const saveImportResultAsNeo4jImport = (importResult: ImportResult) => {
 
   zip.file("neo4j_importer_model.json", JSON.stringify(modelFile));
 
-  zip.generateAsync({ type: "blob" }).then(function (content) {
+  zip.generateAsync({ type: "blob" }).then(function(content) {
     saveAs(content, "import.zip");
   });
 };

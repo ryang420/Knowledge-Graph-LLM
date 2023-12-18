@@ -5,10 +5,10 @@ import { Switch } from "../components/switch";
 import { graphSchemaToModelSchema } from "./utils/graph-schema-utils";
 import KeyModal from "../components/keymodal";
 import { ImportResult } from "./types/respons-types";
-import {
-  saveCypherResult,
-  saveImportResultAsNeo4jImport,
-} from "./utils/file-utils";
+import { NeoGraph2D } from "../components/neo-graph-2d";
+import "./App.css";
+import Modal from "react-modal";
+
 
 const HAS_API_KEY_URI =
   import.meta.env.VITE_HAS_API_KEY_ENDPOINT ??
@@ -31,6 +31,9 @@ function App() {
 
   const initDone = serverAvailable && !needsApiKeyLoading;
 
+  const [saveModalIsOpen, setSaveModalIsOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+
   useEffect(() => {
     fetch(HAS_API_KEY_URI).then(
       (response) => {
@@ -52,13 +55,13 @@ function App() {
           (error) => {
             setNeedsApiKeyLoading(false);
             setServerAvailable(false);
-          }
+          },
         );
       },
       (error) => {
         setNeedsApiKeyLoading(false);
         setServerAvailable(false);
-      }
+      },
     );
   }, []);
 
@@ -95,7 +98,7 @@ function App() {
         const importResult = await runImport(
           reader.result as string,
           schemaJson,
-          needsApiKey ? apiKey : undefined
+          needsApiKey ? apiKey : undefined,
         );
         console.log("import result", importResult);
         if (importResult) {
@@ -109,6 +112,28 @@ function App() {
       }
     };
     const text = reader.readAsText(file.files![0]);
+  };
+
+  const handleSaveToNeo4j = async () => {
+    setIsSaving(true);
+    // sleep to make sure the modal is shown
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+    const response = await fetch(
+      `${import.meta.env.VITE_UNSTRUCTURED_IMPORT_BACKEND_ENDPOINT}/save_graph`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(result),
+      },
+    );
+
+    const saveResult = await response.json();
+    console.log(saveResult);
+    // Show the modal when the save is done
+    setSaveModalIsOpen(true);
+    setIsSaving(false);
   };
 
   if (serverAvailable) {
@@ -132,28 +157,11 @@ function App() {
               This tool is used to import unstructured data into Neo4j. It takes
               a file as input and optionally a schema in the form of{" "}
               <a href="https://neo4j.com/developer-blog/describing-property-graph-data-model/">
-                graph data model
+                <b>graph data model</b>
               </a>{" "}
               which is used to limit the data that is extracted from the file.
               It's important to give the schema descriptive tokens so the tool
               can identify the data that is imported.
-            </p>
-
-            <p>
-              The tool will try to extract as much data as possible from the
-              file and give you two options to import the data into Neo4j:
-            </p>
-
-            <ul>
-              <li>A cypher script that you can run in Neo4j Browser</li>
-              <li>A file that you can import using the Neo4j Import Tool</li>
-            </ul>
-
-            <p>
-              {" "}
-              If you use the Neo4j file you need to open Neo4j Importer which
-              can be found in the Neo4j Desktop. Select the options Open model
-              (with data){" "}
             </p>
 
             <Switch
@@ -183,30 +191,38 @@ function App() {
               {loading ? "Importing. This will take a while..." : "Import"}
             </button>
           </div>
-
-          <div>
-            {result ? (
+          {result ? (
+            <div>
               <div className="flex flex-col w-2/3 gap-2 mx-auto">
                 <h1 className="text-4xl font-bold text-center">Result</h1>
                 <p>
-                  The import was successful. You can save the result as a
-                  cypher.
+                  The import was successful. You can save the result into Neo4j DB.
                 </p>
                 <button
-                  className="ndl-btn ndl-large ndl-filled ndl-primary n-bg-palette-primary-bg-strong"
-                  onClick={() => saveCypherResult(result)}
+                  className={`ndl-btn ndl-large ndl-filled ndl-primary n-bg-palette-primary-bg-strong 
+                    ${isSaving ? "ndl-loading" : ""}`}
+                  onClick={handleSaveToNeo4j}
+                  disabled={isSaving}
                 >
-                  Save as Cypher
+                  {isSaving ? "Saving to Neo4j..." : "Save to Neo4j"}
                 </button>
-                <button
-                  className="ndl-btn ndl-large ndl-filled ndl-primary n-bg-palette-primary-bg-strong"
-                  onClick={() => saveImportResultAsNeo4jImport(result)}
+                <Modal
+                  isOpen={saveModalIsOpen}
+                  onRequestClose={() => setSaveModalIsOpen(false)}
+                  contentLabel="Save Result"
+                  className="save-modal-content"
                 >
-                  Save as Neo4j Import format
-                </button>
+                  <h2>Save Result</h2>
+                  <p>The data has been successfully saved to Neo4j.</p>
+                  <button onClick={() => setSaveModalIsOpen(false)} className="close-button">X</button>
+                </Modal>
               </div>
-            ) : null}
-          </div>
+              <div className="flex flex-col w-2/3 gap-2 mx-auto grey-background">
+                <p>Graph Data Visualization</p>
+                <NeoGraph2D graph_raw_data={result} />
+              </div>
+            </div>
+          ) : null}
         </main>
       </div>
     );

@@ -15,7 +15,7 @@ export const runImport = async (input: string, schema?: string, apiKey?: string)
     body.api_key = apiKey;
   }
   const response = await fetch(
-    `${import.meta.env.VITE_UNSTRUCTURED_IMPORT_BACKEND_ENDPOINT}/data2cypher`,
+    `${import.meta.env.VITE_UNSTRUCTURED_IMPORT_BACKEND_ENDPOINT}/text2graph`,
     {
       method: "POST",
       headers: {

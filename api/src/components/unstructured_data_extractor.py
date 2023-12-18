@@ -19,9 +19,11 @@ Only add nodes and relationships that are part of the schema. If you don't get a
 
 Example:
 Schema: Nodes: [Person {age: integer, name: string}] Relationships: [Person, roommate, Person]
-Alice is 25 years old and Bob is her roommate.
-Nodes: [["Alice", "Person", {"age": 25, "name": "Alice}], ["Bob", "Person", {"name": "Bob"}]]
-Relationships: [["Alice", "roommate", "Bob"]]
+Alice is 25 years old and Bob is her roommate since 1999.
+Nodes: 
+    [["Alice", "Person", {"age": 25, "name": "Alice", "gender": "Female"}], 
+    ["Bob", "Person", {"name": "Bob", "gender": "Male"}]]
+Relationships: [["Alice", "roommate", "Bob", {"start": 1999}]]
 """
 
 
