@@ -1,14 +1,11 @@
-import os
 from langchain.chains.openai_functions import (
-    create_openai_fn_chain,
     create_structured_output_chain,
 )
 from langchain.chat_models import ChatOpenAI
-from langchain.graphs import Neo4jGraph
 from langchain.graphs.graph_document import GraphDocument
 from langchain.prompts import ChatPromptTemplate
 from typing import List, Dict, Any, Optional
-from domain.graph_domain import KnowledgeGraph, map_to_base_relationship, map_to_base_node
+from domains.graph_domain import KnowledgeGraph, map_to_base_relationship, map_to_base_node
 from langchain.schema import Document
 
 
