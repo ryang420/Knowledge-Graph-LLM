@@ -59,10 +59,18 @@ function stripQuestionPrefix(question: string): string {
 }
 
 function App() {
+  const initialChatMessage: ChatMessageObject = {
+    id: 0,
+    type: 'text',
+    sender: 'bot',
+    message: 'Hello! How can I assist you today?',
+    complete: true,
+  };
+
   const [serverAvailable, setServerAvailable] = useState(true);
   const [needsApiKeyLoading, setNeedsApiKeyLoading] = useState(true);
   const [needsApiKey, setNeedsApiKey] = useState(true);
-  const [chatMessages, setChatMessages] = useState(chatMessageObjects);
+  const [chatMessages, setChatMessages] = useState<ChatMessageObject[]>([initialChatMessage]);
   const [conversationState, setConversationState] =
     useState<ConversationState>("ready");
   const { sendJsonMessage, lastMessage, readyState } = useWebSocket(URI, {

@@ -1,3 +1,6 @@
+import chatImg from "./images/chatbot.png";
+import userImg from "./images/user.png"
+
 export type ChatMessageObject = {
   id: number;
   type: "input" | "text" | "error";
@@ -20,16 +23,14 @@ function ChatMessage(props: ChatMessageProps) {
 
   return (
     <div className={chatClass}>
-      {sender === "bot" && <ChatMessageTail side="left" />}
+      {sender === "bot" && <img src={chatImg} alt="Head" className="w-10 h-10 mr-2" />}
       <div
-        className={`min-w-0 px-4 py-2 rounded-t-lg bg-palette-primary-bg-strong text-palette-neutral-text-inverse break-all ${
-          sender === "bot" ? "rounded-br-lg" : "rounded-bl-lg"
-        }`}
+        className={`min-w-0 px-4 py-2 rounded-lg bg-palette-primary-bg-strong text-palette-neutral-text-inverse break-all`}
       >
         {message}
         {sender === "bot" && cypher && <ChatCypherDetail cypher={cypher} />}
       </div>
-      {sender === "self" && <ChatMessageTail side="right" />}
+      {sender === "self" && <img src={userImg} alt="Head" className="w-10 h-10 mr-2" />}
     </div>
   );
 }
