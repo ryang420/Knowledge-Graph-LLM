@@ -7,15 +7,16 @@ import { ImportResult } from "../unstructured-import/types/respons-types";
 
 // define a function to transform raw data into GraphData format
 const transform_raw_graph_data = (raw_data: any) => {
-  const links = raw_data["relationships"].map((link: any) => {
-      return {
-        source: link["source"]["id"],
-        target: link["target"]["id"],
-        type: link["type"],
-        properties: link["properties"],
-      };
-    },
-  );
+  const links = raw_data["relationships"]
+    ? raw_data["relationships"].map((link: any) => {
+        return {
+          source: link["source"]["id"],
+          target: link["target"]["id"],
+          type: link["type"],
+          properties: link["properties"],
+        };
+      })
+    : [];
 
   return {
     nodes: raw_data["nodes"],

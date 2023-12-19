@@ -34,6 +34,15 @@ class KnowledgeGraph(BaseModel):
     )
 
 
+class GraphData(BaseModel):
+    """Generate a knowledge graph with entities and relationships."""
+    nodes: List[Node] = Field(
+        [], description="List of nodes in the knowledge graph")
+    links: List[Relationship] = Field(
+        [], description="List of relationships in the knowledge graph"
+    )
+
+
 def format_property_key(s: str) -> str:
     words = s.split()
     if not words:

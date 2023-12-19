@@ -33,6 +33,9 @@ function App() {
 
   const [saveModalIsOpen, setSaveModalIsOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [updateGraphInProgress, setUpdateGraphInProgress] = useState(false);
+  const [loadingDots, setLoadingDots] = useState("");
+
 
   useEffect(() => {
     fetch(HAS_API_KEY_URI).then(
@@ -136,6 +139,50 @@ function App() {
     setIsSaving(false);
   };
 
+  const handleChangeGraphCommand = async (e: any, apiKey?: string) => {
+    const body = {
+      user_input: e.target.value,
+      graph_data: JSON.stringify(result),
+    };
+    if (apiKey) {
+      // @ts-ignore
+      body.api_key = apiKey;
+    }
+    if (e.key == "Enter") {
+      setUpdateGraphInProgress(true);
+      const response = await fetch(
+        `${import.meta.env.VITE_UNSTRUCTURED_IMPORT_BACKEND_ENDPOINT}/update_graph`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        },
+      );
+      if (!response.ok) {
+        setUpdateGraphInProgress(false);
+        return Promise.reject(
+          new Error(`Failed to update: ${response.statusText}`),
+        );
+      }
+
+      const res = await response.json();
+      console.log("updated res: ", res);
+      setResult(res);
+      setUpdateGraphInProgress(false);
+    }
+  };
+
+  useEffect(() => {
+    if (updateGraphInProgress) {
+      const interval = setInterval(() => {
+        setLoadingDots((prevDots) => (prevDots.length < 3 ? prevDots + "." : "."));
+      }, 500);
+      return () => clearInterval(interval);
+    }
+  }, [updateGraphInProgress]);
+
   if (serverAvailable) {
     return (
       <div className="min-h-screen n-bg-palette-neutral-bg-default">
@@ -217,6 +264,21 @@ function App() {
                   <button onClick={() => setSaveModalIsOpen(false)} className="close-button">X</button>
                 </Modal>
               </div>
+              <div className="flex flex-col w-2/3 gap-2 mx-auto">
+                <h1>Use natural language to operate graph data</h1>
+                <input
+                  id="graph_command"
+                  type="text"
+                  className="px-3 border rounded-sm body-medium border-palette-neutral-border-strong bg-palette-neutral-bg-weak text-height"
+                  onKeyDown={handleChangeGraphCommand}
+                  disabled={updateGraphInProgress}
+                />
+              </div>
+              {updateGraphInProgress && (
+                <div className="overlay">
+                  <p>Loading{loadingDots}</p>
+                </div>
+              )}
               <div className="flex flex-col w-2/3 gap-2 mx-auto grey-background">
                 <p>Graph Data Visualization</p>
                 <NeoGraph2D graph_raw_data={result} />

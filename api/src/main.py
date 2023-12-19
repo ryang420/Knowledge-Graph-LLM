@@ -1,3 +1,4 @@
+import json
 import os
 from typing import Optional
 from langchain.graphs.graph_document import GraphDocument
@@ -6,6 +7,7 @@ from langchain.chat_models import ChatOpenAI
 from components.company_report import CompanyReport
 
 from components.data_disambiguation import DataDisambiguation
+from components.graph_data_update import graph_data_augmentation
 from components.question_proposal_generator import (
     QuestionProposalGenerator,
 )
@@ -31,6 +33,7 @@ from dotenv import load_dotenv
 # .env is in the root directory
 load_dotenv(dotenv_path="../../.env")
 
+
 class Payload(BaseModel):
     question: str
     api_key: Optional[str]
@@ -40,6 +43,12 @@ class Payload(BaseModel):
 class ImportPayload(BaseModel):
     input: str
     neo4j_schema: Optional[str]
+    api_key: Optional[str]
+
+
+class UpdateGraphPayload(BaseModel):
+    graph_data: str
+    user_input: str
     api_key: Optional[str]
 
 
@@ -206,6 +215,25 @@ async def websocket_endpoint(websocket: WebSocket):
         print("disconnected")
 
 
+@app.post("/update_graph")
+async def update_graph(payload: UpdateGraphPayload):
+    if not openai_api_key and not payload.api_key:
+        raise HTTPException(
+            status_code=422,
+            detail="Please set OPENAI_API_KEY environment variable or send it as api_key in the request body",
+        )
+    api_key = openai_api_key if openai_api_key else payload.api_key
+    try:
+        llm = ChatOpenAI(openai_api_key=api_key, model="gpt-3.5-turbo-16k", temperature=0)
+        updated_graph = graph_data_augmentation(llm, payload.graph_data, payload.user_input)
+
+        return json.loads(updated_graph)
+    except Exception as e:
+        print(e)
+        return f"Error: {e}"
+
+
+
 @app.post("/save_graph")
 async def save_graph(graph_doc: GraphDocument):
     graph.add_graph_documents([graph_doc])
@@ -239,7 +267,6 @@ async def text_to_graph(payload: ImportPayload):
 
         for d in documents:
             graph_data = extract_graph(llm, d)
-            print(graph_data)
 
         return {"data": graph_data}
 
