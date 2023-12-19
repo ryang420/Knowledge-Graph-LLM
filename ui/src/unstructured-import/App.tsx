@@ -42,7 +42,6 @@ function App() {
       (response) => {
         response.json().then(
           (result) => {
-            // const needsKey = result.output;
             const needsKey = !result.output;
             setNeedsApiKey(needsKey);
             setNeedsApiKeyLoading(false);
@@ -114,7 +113,7 @@ function App() {
         setLoading(false);
       }
     };
-    const text = reader.readAsText(file.files![0]);
+    reader.readAsText(file.files![0]);
   };
 
   const handleSaveToNeo4j = async () => {
@@ -218,7 +217,7 @@ function App() {
             />
             {useSchema ? (
               <div className="flex flex-col gap-4">
-                Please provide your schema in json format:
+                {"Please provide your schema in json format:"}
                 <textarea
                   className="px-3 border rounded-sm body-medium border-palette-neutral-border-strong bg-palette-neutral-bg-weak"
                   value={schema}
