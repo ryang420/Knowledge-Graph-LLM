@@ -17,6 +17,10 @@ def extract_graph(
     # Extract graph data using OpenAI functions
     extract_chain = get_extraction_chain(llm, nodes, rels)
     data = extract_chain.run(document.page_content)
+
+    # set page_content to empty string to avoid sending it to the client
+    document.page_content = ""
+
     # Construct a graph document
     graph_document = GraphDocument(
         nodes=[map_to_base_node(node) for node in data.nodes],

@@ -14,4 +14,5 @@ export type RelationshipType = {
 export type ImportResult = {
   nodes: Array<NodeType>;
   relationships: Array<RelationshipType>;
+  source?: Map<string, string>;
 };

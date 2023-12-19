@@ -103,6 +103,7 @@ function App() {
           needsApiKey ? apiKey : undefined,
         );
         console.log("import result", importResult);
+
         if (importResult) {
           console.log(importResult);
           setResult(importResult);
@@ -141,7 +142,7 @@ function App() {
   const handleChangeGraphCommand = async (e: any, apiKey?: string) => {
     const body = {
       user_input: e.target.value,
-      graph_data: JSON.stringify(result),
+      graph_data: JSON.stringify({"nodes": result?.nodes, "relationships": result?.relationships}),
     };
     if (apiKey) {
       // @ts-ignore
