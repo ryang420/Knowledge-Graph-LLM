@@ -48,6 +48,7 @@ export const NeoGraph2D = ({ graph_raw_data }: { graph_raw_data: ImportResult })
       <ForceGraph2D
         ref={fgRef}
         width={1000}
+        height={800}
         graphData={transformedData}
         nodeAutoColorBy="id"
         linkAutoColorBy="source"
