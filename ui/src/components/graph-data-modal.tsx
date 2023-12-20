@@ -1,6 +1,7 @@
 import Modal from "react-modal";
 import "./neo-graph-2d.css";
 import { Node, Link } from "./neo-graph";
+import { NodeType } from "../unstructured-import/types/respons-types";
 
 interface GraphModalProps {
   selectedItem: Node | Link | null;
@@ -38,6 +39,7 @@ export const GraphModal: React.FC<GraphModalProps> = ({ selectedItem, setSelecte
           {type == "node" ? (
             <div>
               <h2>Node Details</h2>
+              <p>Id: {(selectedItem as Node).id}</p>
               {renderProperties(selectedItem.properties)}
             </div>
           ) : type == "link" ? (

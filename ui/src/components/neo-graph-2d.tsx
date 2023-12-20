@@ -40,12 +40,15 @@ export const NeoGraph2D = ({ graph_raw_data }: { graph_raw_data: ImportResult })
     setSelectedType("link");
   };
 
+  const transformedData = transform_raw_graph_data(graph_raw_data);
+  console.log("updated graph data: ", transformedData);
+
   return (
     <>
       <ForceGraph2D
         ref={fgRef}
         width={1000}
-        graphData={transform_raw_graph_data(graph_raw_data)}
+        graphData={transformedData}
         nodeAutoColorBy="id"
         linkAutoColorBy="source"
         linkDirectionalArrowLength={5}

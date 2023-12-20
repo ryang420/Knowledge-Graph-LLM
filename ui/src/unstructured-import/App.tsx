@@ -34,7 +34,6 @@ function App() {
   const [saveModalIsOpen, setSaveModalIsOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [updateGraphInProgress, setUpdateGraphInProgress] = useState(false);
-  const [loadingDots, setLoadingDots] = useState("");
 
 
   useEffect(() => {
@@ -133,7 +132,7 @@ function App() {
     );
 
     const saveResult = await response.json();
-    console.log(saveResult);
+    console.log("saved result: ", saveResult);
     // Show the modal when the save is done
     setSaveModalIsOpen(true);
     setIsSaving(false);
@@ -142,7 +141,7 @@ function App() {
   const handleChangeGraphCommand = async (e: any, apiKey?: string) => {
     const body = {
       user_input: e.target.value,
-      graph_data: JSON.stringify({"nodes": result?.nodes, "relationships": result?.relationships}),
+      graph_data: JSON.stringify(result),
     };
     if (apiKey) {
       // @ts-ignore
@@ -168,20 +167,17 @@ function App() {
       }
 
       const res = await response.json();
-      console.log("updated res: ", res);
-      setResult(res);
+
+      if (res.status == "ok") {
+        console.log("updated graph data from llm: ", res.data);
+        setResult(res.data)
+      } else {
+        console.log("failed to update graph data from llm: ");
+      }
+
       setUpdateGraphInProgress(false);
     }
   };
-
-  useEffect(() => {
-    if (updateGraphInProgress) {
-      const interval = setInterval(() => {
-        setLoadingDots((prevDots) => (prevDots.length < 3 ? prevDots + "." : "."));
-      }, 500);
-      return () => clearInterval(interval);
-    }
-  }, [updateGraphInProgress]);
 
   if (serverAvailable) {
     return (
@@ -276,7 +272,7 @@ function App() {
               </div>
               {updateGraphInProgress && (
                 <div className="overlay">
-                  <p>Loading{loadingDots}</p>
+                  <p>Loading...</p>
                 </div>
               )}
               <div className="flex flex-col w-2/3 gap-2 mx-auto grey-background">

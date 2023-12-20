@@ -1,6 +1,7 @@
 export type NodeType = {
   label: string;
   name: string;
+  id: string;
   properties: Record<string, string>;
 };
 

@@ -56,7 +56,7 @@ You are a top-tier algorithm designed for extracting information in structured f
 - **Property Format**: Properties must be in a key-value format.
 - **Quotation Marks**: Never use escaped single or double quotes within property values.
 - **Naming Convention**: Use camelCase for property keys, e.g., `birthDate`. Use UPPER_CASE for relationship type, e.g., `FOUNDED_BY`.
-## 4. Coreference Resolution
+## 4. Co-reference Resolution
 - **Maintain Entity Consistency**: When extracting entities, it's vital to ensure consistency.
 If an entity, such as "John Doe", is mentioned multiple times in the text but is referred to by different names or pronouns (e.g., "Joe", "he"),
 always use the most complete identifier for that entity throughout the knowledge graph. In this example, use "John Doe" as the entity ID.

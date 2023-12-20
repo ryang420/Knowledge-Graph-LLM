@@ -227,11 +227,10 @@ async def update_graph(payload: UpdateGraphPayload):
         llm = ChatOpenAI(openai_api_key=api_key, model="gpt-3.5-turbo-16k", temperature=0)
         updated_graph = graph_data_augmentation(llm, payload.graph_data, payload.user_input)
 
-        return json.loads(updated_graph)
-    except Exception as e:
+        return {"status": "ok", "data": json.loads(updated_graph)}
+    except json.JSONDecodeError as e:
         print(e)
-        return f"Error: {e}"
-
+        return {"status": "failed"}
 
 
 @app.post("/save_graph")

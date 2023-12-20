@@ -15,11 +15,11 @@ def graph_data_augmentation(llm: ChatOpenAI,
         (
             "system",
             """
-            You're a professional developer. Your task is to make changes on the graph data by user's input.
+            Your task is to make changes on the graph data by user's input and return a json string.
             The graph data is a json format string. It contains two keys: nodes and links. 
             The user's input is to add, update or delete the nodes and links. 
             If the deleted node has any relationships or links on it, delete them as well.
-            Return the json data only without providing any other information
+            Return me the json format string of the updated graph data only. No additional information included!
 
             """
         ),
