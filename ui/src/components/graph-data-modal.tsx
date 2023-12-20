@@ -40,6 +40,7 @@ export const GraphModal: React.FC<GraphModalProps> = ({ selectedItem, setSelecte
             <div>
               <h2>Node Details</h2>
               <p>Id: {(selectedItem as Node).id}</p>
+              <p>Type: {(selectedItem as Node).type}</p>
               {renderProperties(selectedItem.properties)}
             </div>
           ) : type == "link" ? (
