@@ -169,8 +169,18 @@ function App() {
       const res = await response.json();
 
       if (res.status == "ok") {
-        console.log("updated graph data from llm: ", res.data);
-        setResult(res.data)
+        let graph_data = res.data;
+        // if "source" not in graph_data add it
+        if (!graph_data["source"]) {
+          graph_data["source"] = {
+            "page_content": "",
+            "metadata": {},
+            "type": "Document",
+          };
+        }
+
+        console.log("updated graph data from llm: ", graph_data);
+        setResult(graph_data);
       } else {
         console.log("failed to update graph data from llm: ");
       }
