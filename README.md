@@ -1,6 +1,6 @@
-# Project FreyrKGLLM
+# Project Knowledge Graph and LLM
 
-Welcome to the Freyr Knowledge Graph + LLM project, where we explore the intersection of large language models and knowledge graphs.
+Welcome to the  Knowledge Graph + LLM project, where we explore the intersection of large language models and knowledge graphs.
 In the project, we explore how to use large language models to augment knowledge graphs and how to use natural language to query knowledge graphs.
    
 ## Repository Structure
